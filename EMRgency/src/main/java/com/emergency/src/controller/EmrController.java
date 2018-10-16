@@ -17,41 +17,44 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.emergency.src.dto.UserDetails;
 import com.emergency.src.service.UserServiceImpl;
 
-
 @Controller
 public class EmrController {
-	
+
 	@Autowired
 	private UserServiceImpl userService;
 
-	@RequestMapping(value = "/registeruser", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/registeruser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<UserDetails> registerUser(@RequestBody UserDetails userDetails) {
-		System.out.println(userDetails.getFirstname());
-		System.out.println(userDetails.getLastname());
-		System.out.println(userDetails.getCellNo());
-		System.out.println(userDetails.getEmail());
-		
 		userService.add(userDetails);
 		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.CREATED);
-		
+
 	}
-	
-	@RequestMapping(value = "/getalluser", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<?> getAllUser(){
+
+	@RequestMapping(value = "/getalluser", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<?> getAllUser() {
 		List<UserDetails> allUsers = userService.getAllUsers();
 		return new ResponseEntity<List<UserDetails>>(allUsers, HttpStatus.OK);
 	}
-	
-//	@RequestMapping(value = "/getuser", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-//	public @ResponseBody ResponseEntity<UserDetails> getUser(@RequestParam(value="cellno",required=true) String cellno){
-//		UserDetails ud = userService.getUser(cellno);
-//		return new ResponseEntity<UserDetails>(ud, HttpStatus.OK);
-//	}
-	
-	@RequestMapping(value = "/getuser", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<UserDetails> getUser(@RequestParam Map<String,String> queryMap){
+
+	@RequestMapping(value = "/getuser", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<UserDetails> getUser(@RequestParam Map<String, String> queryMap) {
 		UserDetails ud = userService.getUser(queryMap);
 		return new ResponseEntity<UserDetails>(ud, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/updateuser", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<UserDetails> updateUser(@RequestBody UserDetails userDetails) {
+		userService.updateUser(userDetails);
+		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(value = "/removeuser", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<?> removeUser(@RequestParam Map<String, String> queryMap) {
+		if (userService.removeUser(queryMap)) {
+			return new ResponseEntity(HttpStatus.OK);
+		}
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
+
 	}
 
 }

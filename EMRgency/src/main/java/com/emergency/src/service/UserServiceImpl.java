@@ -2,6 +2,7 @@ package com.emergency.src.service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +50,9 @@ public class UserServiceImpl {
 		}
 		return udList;
 	}
-	
+
 	@Transactional(readOnly = true)
-	public UserDetails getUser(Map<String,String> queryMap) {
+	public UserDetails getUser(Map<String, String> queryMap) {
 		User user = null;
 		user = daoImpl.get(User.class, queryMap);
 		if (user != null) {
@@ -63,5 +64,37 @@ public class UserServiceImpl {
 			return ud;
 		}
 		return null;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public UserDetails updateUser(UserDetails userDetails) {
+		User user = null;
+		Map<String, String> queryMap = new HashMap<String, String>();
+		queryMap.put("cellno", userDetails.getCellNo());
+		// queryMap.put("imei1", userDetails.getImei1());
+		user = daoImpl.get(User.class, queryMap);
+		if (user != null) {
+			user.setFirstname(userDetails.getFirstname());
+			user.setLastname(userDetails.getLastname());
+			// user.setCellNo(userDetails.getCellNo());
+			user.setEmail(userDetails.getEmail());
+			// user.setImei1(userDetails.getImei1());
+			// user.setImei2(userDetails.getImei2());
+			// user.setCreated(new Timestamp(System.currentTimeMillis()));
+			user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+			daoImpl.update(user);
+		}
+		return userDetails;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+	public boolean removeUser(Map<String, String> queryMap) {
+		User user = null;
+		user = daoImpl.get(User.class, queryMap);
+		if (user != null) {
+			daoImpl.remove(user);
+			return true;
+		}
+		return false;
 	}
 }
