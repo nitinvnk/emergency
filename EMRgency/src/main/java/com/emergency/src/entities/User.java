@@ -2,49 +2,60 @@ package com.emergency.src.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User implements Serializable {
-
-	private static final long serialVersionUID = -4160164535440977745L;
+	
+	private static final long serialVersionUID = -7336532114390870113L;
 
 	@Id
 	@GeneratedValue
-	@Column(name="id")
+	@Column(name = "user_id")
 	private long id;
 
-	@Column(name="firstname")
+	@Column(name = "firstname")
 	private String firstname;
-	
-	@Column(name="lastname")
+
+	@Column(name = "lastname")
 	private String lastname;
-	
-	@Column(name="cellno")
+
+	@Column(name = "cellno")
 	private String cellno;
-	
-	@Column(name="email")
+
+	@Column(name = "email")
 	private String email;
-	
-	@Column(name="imei1")
+
+	@Column(name = "imei1")
 	private String imei1;
-	
-	@Column(name="imei2")
+
+	@Column(name = "imei2")
 	private String imei2;
-	
-	@Column(name="created")
+
+	@Column(name = "created")
 	private Timestamp created;
-	
-	@Column(name="lastupdated")
+
+	@Column(name = "lastupdated")
 	private Timestamp lastUpdated;
+
 	private User primaryUser;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_contactperson", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "contact_id") })
+	List<ContactPerson> contactPersons = new ArrayList<>();
 
 	@Override
 	public int hashCode() {
@@ -157,7 +168,7 @@ public class User implements Serializable {
 	public void setImei2(String imei2) {
 		this.imei2 = imei2;
 	}
-	
+
 	public User getPrimaryUser() {
 		return primaryUser;
 	}
