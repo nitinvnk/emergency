@@ -45,7 +45,7 @@ public class EmrController {
 	@RequestMapping(value = "/updateuser", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<UserDetails> updateUser(@RequestBody UserDetails userDetails) {
 		userService.updateUser(userDetails);
-		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.CREATED);
+		return new ResponseEntity<UserDetails>(userDetails, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/removeuser", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +54,6 @@ public class EmrController {
 			return new ResponseEntity(HttpStatus.OK);
 		}
 		return new ResponseEntity(HttpStatus.NOT_FOUND);
-
 	}
 
 }
