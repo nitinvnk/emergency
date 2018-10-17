@@ -2,6 +2,7 @@ package com.emergency.src;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -19,4 +20,9 @@ public class EmRgencyApplication {
 	public SessionFactory sessionFactory(HibernateEntityManagerFactory hemf){  
 	    return hemf.getSessionFactory();  
 	}  
+	
+	@Bean
+	public ModelMapper modelMapper() {
+	    return new ModelMapper();
+	}
 }

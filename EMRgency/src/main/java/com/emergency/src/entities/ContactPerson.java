@@ -2,8 +2,8 @@ package com.emergency.src.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "contactperson")
 public class ContactPerson implements Serializable {
 
-	private static final long serialVersionUID = 6546926010874939747L;
+	private static final long serialVersionUID = 3280981447696446973L;
 
 	@Id
 	@GeneratedValue
@@ -36,13 +36,13 @@ public class ContactPerson implements Serializable {
 	private String semail;
 
 	@Column(name = "created")
-	private Timestamp created;
+	private Timestamp created = new Timestamp(System.currentTimeMillis());
 
 	@Column(name = "lastupdated")
 	private Timestamp lastUpdated;
 
 	@ManyToMany(mappedBy = "contactPersons")
-	private List<User> associatedUsers = new ArrayList<>();
+	private Set<User> associatedUsers = new HashSet<>();
 
 	@Override
 	public int hashCode() {
@@ -143,11 +143,11 @@ public class ContactPerson implements Serializable {
 		this.lastUpdated = lastUpdated;
 	}
 
-	public List<User> getAssociatedUsers() {
+	public Set<User> getAssociatedUsers() {
 		return associatedUsers;
 	}
 
-	public void setAssociatedUsers(List<User> associatedUsers) {
+	public void setAssociatedUsers(Set<User> associatedUsers) {
 		this.associatedUsers = associatedUsers;
 	}
 

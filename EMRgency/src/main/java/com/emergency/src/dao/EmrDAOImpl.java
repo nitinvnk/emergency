@@ -3,8 +3,6 @@ package com.emergency.src.dao;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +76,15 @@ public abstract class EmrDAOImpl<E, K extends Serializable> implements IEmrDAO<E
 		}
 		return null;
 
+	}
+
+	public E get(Class<E> entityClass, String column, String columnValue) {
+		Criteria criteria = currentSession().createCriteria(entityClass);
+		criteria.add(Restrictions.eq(column, columnValue));
+		if (!CollectionUtils.isEmpty(criteria.list())) {
+			return (E) criteria.list().get(0);
+		}
+		return null;
 	}
 
 	protected Session currentSession() {

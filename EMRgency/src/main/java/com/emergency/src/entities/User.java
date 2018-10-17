@@ -2,8 +2,8 @@ package com.emergency.src.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,8 +18,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "user")
 public class User implements Serializable {
-	
-	private static final long serialVersionUID = -7336532114390870113L;
+
+	private static final long serialVersionUID = -6628847943456228906L;
 
 	@Id
 	@GeneratedValue
@@ -55,7 +55,7 @@ public class User implements Serializable {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_contactperson", joinColumns = { @JoinColumn(name = "user_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "contact_id") })
-	List<ContactPerson> contactPersons = new ArrayList<>();
+	Set<ContactPerson> contactPersons = new HashSet<>();
 
 	@Override
 	public int hashCode() {
@@ -136,12 +136,12 @@ public class User implements Serializable {
 	public void setLastname(String lastname) {
 		this.lastname = lastname;
 	}
-
-	public String getCellNo() {
+	
+	public String getCellno() {
 		return cellno;
 	}
 
-	public void setCellNo(String cellno) {
+	public void setCellno(String cellno) {
 		this.cellno = cellno;
 	}
 
@@ -192,5 +192,15 @@ public class User implements Serializable {
 	public void setLastUpdated(Timestamp lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
+
+	public Set<ContactPerson> getContactPersons() {
+		return contactPersons;
+	}
+
+	public void setContactPersons(Set<ContactPerson> contactPersons) {
+		this.contactPersons = contactPersons;
+	}
+	
+	
 
 }

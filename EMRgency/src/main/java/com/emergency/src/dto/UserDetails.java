@@ -7,16 +7,17 @@ public class UserDetails implements Serializable {
 	private static final long serialVersionUID = 7713916203402273119L;
 	private String firstname;
 	private String lastname;
-	private String cellNo;
+	private String cellno;
 	private String email;
 	private String imei1;
 	private String imei2;
+    private ContactPersonDetails[] cpDetails = new ContactPersonDetails[3];	
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cellNo == null) ? 0 : cellNo.hashCode());
+		result = prime * result + ((cellno == null) ? 0 : cellno.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + ((firstname == null) ? 0 : firstname.hashCode());
 		result = prime * result + ((imei1 == null) ? 0 : imei1.hashCode());
@@ -34,10 +35,10 @@ public class UserDetails implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		UserDetails other = (UserDetails) obj;
-		if (cellNo == null) {
-			if (other.cellNo != null)
+		if (cellno == null) {
+			if (other.cellno != null)
 				return false;
-		} else if (!cellNo.equals(other.cellNo))
+		} else if (!cellno.equals(other.cellno))
 			return false;
 		if (email == null) {
 			if (other.email != null)
@@ -69,7 +70,7 @@ public class UserDetails implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UserDetails [firstname=" + firstname + ", lastname=" + lastname + ", cellNo=" + cellNo + ", email="
+		return "UserDetails [firstname=" + firstname + ", lastname=" + lastname + ", cellNo=" + cellno + ", email="
 				+ email + ", imei1=" + imei1 + ", imei2=" + imei2 + "]";
 	}
 
@@ -89,12 +90,12 @@ public class UserDetails implements Serializable {
 		this.lastname = lastname;
 	}
 
-	public String getCellNo() {
-		return cellNo;
+	public String getCellno() {
+		return cellno;
 	}
 
-	public void setCellNo(String cellNo) {
-		this.cellNo = cellNo;
+	public void setCellno(String cellno) {
+		this.cellno = cellno;
 	}
 
 	public String getEmail() {
@@ -119,6 +120,14 @@ public class UserDetails implements Serializable {
 
 	public void setImei2(String imei2) {
 		this.imei2 = imei2;
+	}
+
+	public ContactPersonDetails[] getCpDetails() {
+		return cpDetails;
+	}
+
+	public void setCpDetails(ContactPersonDetails[] cpDetails) {
+		this.cpDetails = cpDetails;
 	}
 
 }
