@@ -62,7 +62,7 @@ public class UserServiceImpl {
 		List<UserDetails> udList = new ArrayList<>();
 		List<User> all = daoImpl.getAll();
 		for (User user : all) {
-			UserDetails ud = EmergencyUtil.convertToDTO(user, UserDetails.class);
+			UserDetails uDetails = EmergencyUtil.convertToDTO(user, UserDetails.class);
 			if (!CollectionUtils.isEmpty(user.getContactPersons())) {
 				ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
 				Stream<ContactPerson> stream = user.getContactPersons().stream();
@@ -71,10 +71,10 @@ public class UserServiceImpl {
 					ContactPerson cp = cpa[i];
 					cpda[i] = EmergencyUtil.convertToDTO(cp, ContactPersonDetails.class);
 				}
-				ud.setCpDetails(cpda);
+				uDetails.setCpDetails(cpda);
 			}
 
-			udList.add(ud);
+			udList.add(uDetails);
 		}
 		return udList;
 	}
@@ -100,18 +100,23 @@ public class UserServiceImpl {
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public UserDetails updateUser(UserDetails userDetails) {
+		UserDetails uDetails = null;
 		User user = null;
 		Map<String, String> queryMap = new HashMap<String, String>();
 		queryMap.put("cellno", userDetails.getCellno());
 		user = daoImpl.get(User.class, queryMap);
 		if (user != null) {
-			user.setFirstname(userDetails.getFirstname());
-			user.setLastname(userDetails.getLastname());
-			user.setEmail(userDetails.getEmail());
+			//user = EmergencyUtil.convertToEntity(userDetails, User.class);
+			//user = EmergencyUtil.convertToEntityForUpdate(userDetails, User.class);
+			 user.setFirstname(userDetails.getFirstname());
+			 user.setLastname(userDetails.getLastname());
+			 user.setEmail(userDetails.getEmail());
 			user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 			daoImpl.update(user);
+			//daoImpl.saveOrUpdate(user);
+			uDetails = EmergencyUtil.convertToDTO(user, UserDetails.class);
 		}
-		return userDetails;
+		return uDetails;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
