@@ -34,21 +34,25 @@ public abstract class EmrDAOImpl<E, K extends Serializable> implements IEmrDAO<E
 	@Override
 	public void add(E entity) {
 		currentSession().save(entity);
+		currentSession().flush();
 	}
 
 	@Override
 	public void saveOrUpdate(E entity) {
 		currentSession().saveOrUpdate(entity);
+		currentSession().flush();
 	}
 
 	@Override
 	public void update(E entity) {
 		currentSession().saveOrUpdate(entity);
+		currentSession().flush();
 	}
 
 	@Override
 	public void remove(E entity) {
 		currentSession().delete(entity);
+		currentSession().flush();
 	}
 
 	@Override

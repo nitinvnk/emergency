@@ -128,6 +128,12 @@ public class UserServiceImpl {
 		User user = null;
 		user = daoImpl.get(User.class, queryMap);
 		if (user != null) {
+			if (!CollectionUtils.isEmpty(user.getContactPersons())) {
+				for (ContactPerson cp : user.getContactPersons()) {
+					cpDaoImpl.remove(cp);
+				}
+			}
+			user.getContactPersons().clear();
 			daoImpl.remove(user);
 			return true;
 		}
