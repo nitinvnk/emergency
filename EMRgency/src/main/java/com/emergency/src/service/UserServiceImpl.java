@@ -22,6 +22,7 @@ import com.emergency.src.dto.ContactPersonDetails;
 import com.emergency.src.dto.UserDetails;
 import com.emergency.src.entities.ContactPerson;
 import com.emergency.src.entities.User;
+import com.emergency.src.exception.EmergencyException;
 import com.emergency.src.util.EmergencyUtil;
 
 @Service
@@ -36,6 +37,9 @@ public class UserServiceImpl {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public UserDetails add(UserDetails userDetails) {
 		if (userDetails != null) {
+			if ((daoImpl.get(User.class, "cellno", userDetails.getCellno()) != null))
+				throw new EmergencyException("User with given cell no " + userDetails.getCellno() + " already Exists");
+
 			User user = EmergencyUtil.convertToEntity(userDetails, User.class);
 			user.setCreated(new Timestamp(System.currentTimeMillis()));
 			user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
@@ -53,6 +57,7 @@ public class UserServiceImpl {
 				}
 			}
 			daoImpl.add(user);
+			EmergencyUtil.convertToEntityForUpdate(userDetails, user);
 		}
 		return userDetails;
 	}
