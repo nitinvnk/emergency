@@ -2,12 +2,23 @@ package com.emergency.src.dto;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 public class ContactPersonDetails implements Serializable {
 
 	private static final long serialVersionUID = -6005039873686238296L;
+	
+	@NotEmpty(message = "contact person name must not be empty")
 	private String name;
+	
+	@NotEmpty(message = "contact person cellno is Mandatory")
 	private String cellno;
+	
+	@Length(message = "contact person pemail length should not exceeds 50 characters")
 	private String pemail;
+	
+	@Length(message = "contact person semail length should not exceeds 50 characters")
 	private String semail;
 	
 	private UserDetails userDetails;

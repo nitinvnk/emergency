@@ -2,23 +2,28 @@ package com.emergency.src.dto;
 
 import java.io.Serializable;
 
+import javax.validation.Valid;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class UserDetails implements Serializable {
 
 	private static final long serialVersionUID = 7713916203402273119L;
-	@NotEmpty(message = " Firstname must not be empty")
+	
+	@NotEmpty(message = " firstname must not be empty")
 	private String firstname;
 	
-	@NotEmpty(message = " Lastname must not be empty")
+	@NotEmpty(message = " lastname must not be empty")
 	private String lastname;
 	
-	@NotEmpty(message = "Mobile/Cell number is Mandatory")
+	@NotEmpty(message = "cellno is Mandatory")
 	private String cellno;
 	
 	private String email;
 	private String imei1;
 	private String imei2;
+	
+	@Valid
 	private ContactPersonDetails[] cpDetails = new ContactPersonDetails[3];
 
 	@Override

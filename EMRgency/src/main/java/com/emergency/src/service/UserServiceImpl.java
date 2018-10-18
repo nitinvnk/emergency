@@ -23,6 +23,7 @@ import com.emergency.src.dto.UserDetails;
 import com.emergency.src.entities.ContactPerson;
 import com.emergency.src.entities.User;
 import com.emergency.src.exception.EmergencyException;
+import com.emergency.src.exception.UserNotFoundException;
 import com.emergency.src.util.EmergencyUtil;
 
 @Service
@@ -98,6 +99,8 @@ public class UserServiceImpl {
 			}
 			ud = EmergencyUtil.convertToDTO(user, UserDetails.class);
 			ud.setCpDetails(cpda);
+		} else {
+			throw new UserNotFoundException("User with given cell no " + queryMap.get("cellno") + " not found");
 		}
 		return ud;
 	}
@@ -124,6 +127,8 @@ public class UserServiceImpl {
 				uDetails = EmergencyUtil.convertToDTO(user, UserDetails.class);
 				uDetails.setCpDetails(cpda);
 			}
+		} else {
+			throw new UserNotFoundException("User with given cell no " + userDetails.getCellno() + " not found");
 		}
 		return uDetails;
 	}
@@ -141,8 +146,9 @@ public class UserServiceImpl {
 			user.getContactPersons().clear();
 			daoImpl.remove(user);
 			return true;
+		} else {
+			throw new UserNotFoundException("User with given cell no " + queryMap.get("cellno") + " not found");
 		}
-		return false;
 	}
 
 }
