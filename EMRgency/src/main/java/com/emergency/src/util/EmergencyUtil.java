@@ -1,5 +1,6 @@
 package com.emergency.src.util;
 
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
@@ -20,18 +21,20 @@ public class EmergencyUtil {
 		return convertedEntity;
 	}
 
-	public static <T, E> E convertToEntityForUpdate(Object dto, Class<E> entity) {
+	public static <T, E> void convertToEntityForUpdate(Object dto,Object entity) {
 
-		mapper.addMappings(new EmergencyUtil().new TypeMappingIgnoreFields());
-		E convertedEntity = mapper.map(dto, entity);
-		return convertedEntity;
+		//mapper.addMappings(new EmergencyUtil().new TypeMappingIgnoreFields());
+        mapper.map(dto, entity);
+		//return convertedEntity;
 	}
 
 	class TypeMappingIgnoreFields extends PropertyMap<UserDetails, User> {
 
 		@Override
 		protected void configure() {
-			skip(source.getCellno());
+           
+			when(Conditions.isNull()).skip(source.getCellno(),destination.getCellno());
+			//skip(source.getCellno());
 		}
 
 	}

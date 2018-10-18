@@ -81,9 +81,9 @@ public class UserServiceImpl {
 
 	@Transactional(readOnly = true)
 	public UserDetails getUser(Map<String, String> queryMap) {
-		User user = null;
-		user = daoImpl.get(User.class, queryMap);
-		if (user != null && user.getContactPersons() != null) {
+		UserDetails ud = null;
+		User user = daoImpl.get(User.class, queryMap);
+		if (user != null && !CollectionUtils.isEmpty(user.getContactPersons())) {
 			ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
 			Stream<ContactPerson> stream = user.getContactPersons().stream();
 			ContactPerson[] cpa = stream.toArray(ContactPerson[]::new);
@@ -91,11 +91,10 @@ public class UserServiceImpl {
 				ContactPerson cp = cpa[i];
 				cpda[i] = EmergencyUtil.convertToDTO(cp, ContactPersonDetails.class);
 			}
-			UserDetails ud = EmergencyUtil.convertToDTO(user, UserDetails.class);
+			ud = EmergencyUtil.convertToDTO(user, UserDetails.class);
 			ud.setCpDetails(cpda);
-			return ud;
 		}
-		return null;
+		return ud;
 	}
 
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
@@ -106,15 +105,20 @@ public class UserServiceImpl {
 		queryMap.put("cellno", userDetails.getCellno());
 		user = daoImpl.get(User.class, queryMap);
 		if (user != null) {
-			//user = EmergencyUtil.convertToEntity(userDetails, User.class);
-			//user = EmergencyUtil.convertToEntityForUpdate(userDetails, User.class);
-			 user.setFirstname(userDetails.getFirstname());
-			 user.setLastname(userDetails.getLastname());
-			 user.setEmail(userDetails.getEmail());
+			EmergencyUtil.convertToEntityForUpdate(userDetails, user);
 			user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 			daoImpl.update(user);
-			//daoImpl.saveOrUpdate(user);
-			uDetails = EmergencyUtil.convertToDTO(user, UserDetails.class);
+			if (!CollectionUtils.isEmpty(user.getContactPersons())) {
+				ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
+				Stream<ContactPerson> stream = user.getContactPersons().stream();
+				ContactPerson[] cpa = stream.toArray(ContactPerson[]::new);
+				for (int i = 0; i < cpa.length; i++) {
+					ContactPerson cp = cpa[i];
+					cpda[i] = EmergencyUtil.convertToDTO(cp, ContactPersonDetails.class);
+				}
+				uDetails = EmergencyUtil.convertToDTO(user, UserDetails.class);
+				uDetails.setCpDetails(cpda);
+			}
 		}
 		return uDetails;
 	}
