@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -128,6 +129,20 @@ public class UserServiceImpl {
 		if (user != null) {
 			EmergencyUtil.convertToEntityForUpdate(userDetails, user);
 			user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+			ContactPersonDetails[] cpDetails = userDetails.getCpDetails();
+			if (cpDetails != null && cpDetails.length > 0) {
+				Stream<ContactPerson> stream = user.getContactPersons().stream();
+				ContactPerson[] cpa = stream.toArray(ContactPerson[]::new);
+				for (int i = 0; i < cpDetails.length; i++) {
+					for (int j = 0; i < cpa.length; i++) {
+						if(cpDetails[i].getName().equals(cpa[j].getName())) {
+							EmergencyUtil.convertDTOToEntity(cpDetails[i], cpa[j]);
+						}
+						
+					}
+					
+				}
+			}
 			daoImpl.update(user);
 			if (!CollectionUtils.isEmpty(user.getContactPersons())) {
 				ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
