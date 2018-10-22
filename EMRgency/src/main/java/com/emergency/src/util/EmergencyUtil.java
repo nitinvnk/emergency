@@ -3,6 +3,7 @@ package com.emergency.src.util;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.beans.BeanUtils;
 
 import com.emergency.src.dto.UserDetails;
 import com.emergency.src.entities.User;
@@ -37,5 +38,14 @@ public class EmergencyUtil {
 			//skip(source.getCellno());
 		}
 
+	}
+	
+	
+	public static void convertDTOToEntity(Object dto, Object entity) {
+	    BeanUtils.copyProperties(dto, entity);	
+	}
+	
+	public static  void convertEntityToDTO(Object entity,Object dto) {
+		BeanUtils.copyProperties(entity, dto);	
 	}
 }

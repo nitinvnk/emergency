@@ -38,10 +38,15 @@ public class UserServiceImpl {
 	@Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
 	public UserDetails add(UserDetails userDetails) {
 		if (userDetails != null) {
-			if ((daoImpl.get(User.class, "cellno", userDetails.getCellno()) != null))
+			Map<String, String> queryMap = new HashMap<String, String>();
+			queryMap.put("cellno", userDetails.getCellno());
+			queryMap.put("imei1", userDetails.getImei1());
+			queryMap.put("imei2", userDetails.getImei1());
+			if ((daoImpl.get(User.class, queryMap) != null))
 				throw new EmergencyException("User with given cell no " + userDetails.getCellno() + " already Exists");
 
-			User user = EmergencyUtil.convertToEntity(userDetails, User.class);
+			User user = new User();
+			EmergencyUtil.convertDTOToEntity(userDetails, user);
 			user.setCreated(new Timestamp(System.currentTimeMillis()));
 			user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 			ContactPersonDetails[] cpDetails = userDetails.getCpDetails();
@@ -50,7 +55,8 @@ public class UserServiceImpl {
 				for (ContactPersonDetails cpd : cps) {
 					ContactPerson cp = cpDaoImpl.get(ContactPerson.class, "cellno", cpd.getCellno());
 					if (cp == null) {
-						cp = EmergencyUtil.convertToEntity(cpd, ContactPerson.class);
+						cp = new ContactPerson();
+						EmergencyUtil.convertDTOToEntity(cpd, cp);
 						cp.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 						user.getContactPersons().add(cp);
 					} else
@@ -58,7 +64,7 @@ public class UserServiceImpl {
 				}
 			}
 			daoImpl.add(user);
-			EmergencyUtil.convertToEntityForUpdate(userDetails, user);
+			EmergencyUtil.convertEntityToDTO(user, userDetails);
 		}
 		return userDetails;
 	}
@@ -68,18 +74,20 @@ public class UserServiceImpl {
 		List<UserDetails> udList = new ArrayList<>();
 		List<User> all = daoImpl.getAll();
 		for (User user : all) {
-			UserDetails uDetails = EmergencyUtil.convertToDTO(user, UserDetails.class);
+			UserDetails uDetails = new UserDetails();
+			EmergencyUtil.convertEntityToDTO(user, uDetails);
 			if (!CollectionUtils.isEmpty(user.getContactPersons())) {
 				ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
 				Stream<ContactPerson> stream = user.getContactPersons().stream();
 				ContactPerson[] cpa = stream.toArray(ContactPerson[]::new);
 				for (int i = 0; i < cpa.length; i++) {
+					ContactPersonDetails cpd = new ContactPersonDetails();
 					ContactPerson cp = cpa[i];
-					cpda[i] = EmergencyUtil.convertToDTO(cp, ContactPersonDetails.class);
+					EmergencyUtil.convertEntityToDTO(cp, cpd);
+					cpda[i] = cpd;
 				}
 				uDetails.setCpDetails(cpda);
 			}
-
 			udList.add(uDetails);
 		}
 		return udList;
@@ -89,16 +97,21 @@ public class UserServiceImpl {
 	public UserDetails getUser(Map<String, String> queryMap) {
 		UserDetails ud = null;
 		User user = daoImpl.get(User.class, queryMap);
-		if (user != null && !CollectionUtils.isEmpty(user.getContactPersons())) {
-			ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
-			Stream<ContactPerson> stream = user.getContactPersons().stream();
-			ContactPerson[] cpa = stream.toArray(ContactPerson[]::new);
-			for (int i = 0; i < cpa.length; i++) {
-				ContactPerson cp = cpa[i];
-				cpda[i] = EmergencyUtil.convertToDTO(cp, ContactPersonDetails.class);
+		if (user != null) {
+			ud = new UserDetails();
+			EmergencyUtil.convertEntityToDTO(user, ud);
+			if (!CollectionUtils.isEmpty(user.getContactPersons())) {
+				ContactPersonDetails[] cpda = new ContactPersonDetails[user.getContactPersons().size()];
+				Stream<ContactPerson> stream = user.getContactPersons().stream();
+				ContactPerson[] cpa = stream.toArray(ContactPerson[]::new);
+				for (int i = 0; i < cpa.length; i++) {
+					ContactPersonDetails cpd = new ContactPersonDetails();
+					ContactPerson cp = cpa[i];
+					EmergencyUtil.convertEntityToDTO(cp, cpd);
+					cpda[i] = cpd;
+				}
+				ud.setCpDetails(cpda);
 			}
-			ud = EmergencyUtil.convertToDTO(user, UserDetails.class);
-			ud.setCpDetails(cpda);
 		} else {
 			throw new UserNotFoundException("User with given cell no " + queryMap.get("cellno") + " not found");
 		}
